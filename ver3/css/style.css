@@ -1,0 +1,82 @@
+/* ver3 — 스크롤 = 카메라의 여정. 화면에 붙은 얇은 UI 와 큰 세리프 제목만. */
+:root {
+  --serif: "Instrument Serif", "Pretendard Variable", serif;
+  --sans: "Inter", "Pretendard Variable", sans-serif;
+  --kr: "Pretendard Variable", Pretendard, sans-serif;
+  --ease: cubic-bezier(.35, 0, 0, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
+html, body { background: #000; color: #f3f1ea; font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+body.locked { overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+button { background: none; border: 0; color: inherit; cursor: pointer; }
+
+#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; z-index: 0; }
+#spacer { height: 1500vh; }   /* 스크롤 길이 = 여정의 길이 */
+.layer { position: fixed; z-index: 3; pointer-events: none; }
+
+/* 로딩 */
+#loader { position: fixed; inset: 0; z-index: 20; background: #000; display: grid; place-items: center; transition: opacity 1.2s var(--ease), visibility 0s 1.2s; }
+#loader.done { opacity: 0; visibility: hidden; }
+#loader .sym { width: 74px; height: 74px; fill: none; stroke: #e9e6dc; stroke-width: 1.4; }
+#loader .ring { stroke-dasharray: 60 220; transform-origin: 50% 50%; animation: spin 1.6s linear infinite; }
+#loader-pct { position: absolute; left: 50%; top: calc(50% + 62px); transform: translateX(-50%); font-size: 11px; letter-spacing: .2em; color: #8a877e; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 상단 로고 */
+#top { position: fixed; top: 34px; left: 50%; transform: translateX(-50%); z-index: 6; }
+#logo { font-family: var(--sans); font-weight: 500; font-size: 24px; letter-spacing: .34em; padding-left: .34em; }
+
+/* 첫 화면 */
+#hero { left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; }
+#hero .eyebrow { font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: #cfcabd; opacity: .8; }
+#scroll-hint { left: 50%; bottom: 96px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 11px; letter-spacing: .06em; color: #e6e2d6; }
+#scroll-hint .arrow { width: 6px; height: 6px; border-right: 1px solid; border-bottom: 1px solid; transform: rotate(45deg); }
+#scroll-hint .line { width: 1px; height: 40px; background: linear-gradient(#fff0, #fff); animation: drip 2s var(--ease) infinite; transform-origin: top; }
+@keyframes drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+/* 챕터 제목 — 화면 아래 가운데 */
+#chapter { left: 50%; bottom: 13vh; transform: translateX(-50%); width: min(760px, 88vw); text-align: center; }
+#ch-title { font-family: var(--serif); font-weight: 400; font-size: clamp(48px, 5.4vw, 96px); line-height: 1; letter-spacing: -.01em; }
+#ch-ko { margin-top: 10px; font-family: var(--kr); font-size: 13px; letter-spacing: .3em; color: #d9d4c6; }
+#ch-body { margin: 16px auto 0; max-width: 34em; font-family: var(--kr); font-size: 14px; line-height: 1.8; color: #e7e3d8; opacity: .85; }
+
+/* 전시 카드 */
+#card { left: 50%; top: 50%; width: min(460px, 90vw); transform: translate(-50%, -46%); opacity: 0; pointer-events: none; }
+#card.on { pointer-events: auto; }
+#card h3 { font-family: var(--sans); font-weight: 500; font-size: 20px; text-align: center; margin-bottom: 16px; letter-spacing: -.01em; }
+#card .panel { background: rgba(28, 28, 30, .86); backdrop-filter: blur(14px); border: 1px solid #ffffff14; border-radius: 12px; padding: 10px; }
+#card .ev { display: grid; grid-template-columns: 96px 1fr 88px; gap: 14px; align-items: center; padding: 14px 10px; }
+#card .ev + .ev { border-top: 1px solid #ffffff12; }
+#card .when b { display: block; font-size: 13px; font-weight: 500; } #card .when span { font-size: 11px; color: #9a978e; }
+#card .what strong { display: block; font-family: var(--kr); font-size: 14px; } #card .what span { display: block; font-family: var(--kr); font-size: 12px; color: #aaa69b; margin: 4px 0; }
+#card .what em { font-style: normal; font-size: 11px; color: #7f8cff; font-family: var(--kr); }
+#card img { width: 88px; height: 60px; object-fit: cover; border-radius: 6px; }
+
+/* 끝 문장 */
+#outro { left: 50%; top: 42%; transform: translate(-50%, -50%); text-align: center; opacity: 0; width: 92vw; }
+#outro h1 { font-family: var(--kr); font-weight: 600; font-size: clamp(30px, 3.6vw, 60px); line-height: 1.25; letter-spacing: -.02em; }
+#outro p { margin-top: 18px; font-size: 11px; letter-spacing: .3em; color: #cfcabd; }
+
+/* 하단 */
+#foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 22px 30px; font-size: 11px; }
+#foot .links { display: flex; gap: 14px; color: #bdb8ab; }
+#foot .links a:hover { color: #fff; }
+#home-sym { position: absolute; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; }
+#home-sym svg { width: 100%; height: 100%; fill: none; stroke: #e9e6dc; stroke-width: 2.4; }
+#sound { width: 34px; height: 34px; }
+#sound svg { width: 100%; height: 100%; fill: none; stroke: #e9e6dc; stroke-width: 1.4; }
+#sound .bars { opacity: .35; } #sound.on .bars { opacity: 1; animation: eq 1s ease-in-out infinite alternate; }
+@keyframes eq { to { transform: scaleY(.6); transform-origin: center; } }
+
+#progress { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); width: 1px; height: 120px; background: #ffffff22; z-index: 6; }
+#progress i { position: absolute; left: -1px; top: 0; width: 3px; height: 0; background: #fff; }
+
+@media (max-width: 760px) {
+  #top { top: 22px; } #logo { font-size: 18px; }
+  #chapter { bottom: 16vh; } #ch-body { font-size: 13px; }
+  #card .ev { grid-template-columns: 78px 1fr; } #card img { display: none; }
+  #progress { right: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { #scroll-hint .line, #loader .ring { animation: none; } }
