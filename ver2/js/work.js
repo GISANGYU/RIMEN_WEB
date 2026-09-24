@@ -37,6 +37,7 @@ export function mount(root, params, app) {
     <div class="work-frame" data-hover><div class="edge"></div><img alt=""><video muted loop playsinline></video><canvas></canvas>
       <i class="brk a"></i><i class="brk b"></i><i class="brk c"></i><i class="brk d"></i></div>
     <div class="work-meta"><div class="no mono"></div><div class="t"></div><div class="s"></div></div>
+    <div class="work-desc"><p></p><div class="play mono"><span class="st">LOADING</span><i><b></b></i><span class="tc">00:00</span></div></div>
     <div class="work-filter mono"><button data-f="ALL" class="on" data-hover>ALL</button><span>/</span><button data-f="TEST" data-hover>TEST LOG</button><span>/</span><button data-f="R&D" data-hover>R&amp;D</button></div>
     <div class="work-count mono"></div>
     <a class="side l mono" href="#/about" data-hover>&lt; ABOUT</a>
@@ -46,6 +47,7 @@ export function mount(root, params, app) {
   const listEl = root.querySelector(".work-list"), frame = root.querySelector(".work-frame");
   const img = frame.querySelector("img"), vid = frame.querySelector("video"), pcv = frame.querySelector("canvas"), pg = pcv.getContext("2d");
   const meta = root.querySelector(".work-meta"), count = root.querySelector(".work-count");
+  const desc = root.querySelector(".work-desc"), st = desc.querySelector(".st"), bar = desc.querySelector("b"), tc = desc.querySelector(".tc");
 
   function buildList() {
     list = filter === "ALL" ? WORKS : WORKS.filter(w => w.kind === filter || (filter === "TEST" && w.kind === "MAIN"));
@@ -65,20 +67,24 @@ export function mount(root, params, app) {
   frame.addEventListener("click", () => app.go(`#/work/${list[cur].id}`));
 
   // ── 입자 응결 ──
-  let parts = [], condense = 0, frameW = 0, frameH = 0, token = 0;
+  // armed = 새 작업의 입자가 배치된 뒤에만 true. (이전 작업의 '다 모인 입자'를 보고 옛 영상을 틀어 버리던 버그 방지)
+  let parts = [], condense = 0, frameW = 0, frameH = 0, token = 0, armed = false;
   async function select(i, instant) {
-    cur = i; const w = list[cur]; const my = ++token;
+    cur = i; const w = list[cur]; const my = ++token; armed = false;
     try { sessionStorage.setItem("limen:work", WORKS.indexOf(w)); } catch (e) {}
     meta.querySelector(".no").textContent = `[ WORK ${String(WORKS.indexOf(w) + 1).padStart(2, "0")} · ${w.kind} ]`;
     const t = meta.querySelector(".t"); t.textContent = w.title; t.classList.toggle("kr", /[가-힣]/.test(w.title));
     meta.querySelector(".s").textContent = w.sub;
+    desc.querySelector("p").textContent = w.desc;
+    desc.classList.remove("in"); void desc.offsetWidth; desc.classList.add("in");
+    st.textContent = "CONDENSING"; bar.style.width = "0%"; tc.textContent = "00:00";
     count.textContent = `${String(cur + 1).padStart(2, "0")} — ${String(list.length).padStart(2, "0")} ${filter === "ALL" ? "WORKS" : filter}`;
     img.style.opacity = 0; vid.style.opacity = 0; vid.pause();
     // offsetWidth 는 CRT 전환 중(scaleY)에도 실제 크기를 준다 — getBoundingClientRect 는 0 이 된다
     frameW = frame.offsetWidth; frameH = frame.offsetHeight;
     const dpr = Math.min(devicePixelRatio, 2);
     pcv.width = frameW * dpr; pcv.height = frameH * dpr; pg.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const tg = await targetsFor(w.image, frameW - 16, frameH - 16);
+    const tg = await targetsFor(w.still, frameW - 16, frameH - 16);
     if (my !== token) return;
     // 이전 입자에서 이어받아 흩뿌린 뒤 새 목표로
     parts = tg.map((p, k) => {
@@ -87,8 +93,9 @@ export function mount(root, params, app) {
         vx: (Math.random() - .5) * 14, vy: (Math.random() - .5) * 14, tx: p[0] + 8, ty: p[1] + 8, l: p[2], delay: Math.random() * .35 };
     });
     condense = 0;
-    img.src = w.image;
-    if (w.video) { vid.src = w.video; }
+    img.src = w.still;
+    vid.src = w.video; vid.load();
+    armed = true;
     app.sound.blip(420 + cur * 30, .05, .03);
   }
 
@@ -168,10 +175,16 @@ export function mount(root, params, app) {
       pg.fillRect(p.x, p.y, 1.3, 1.3);
     }
     // 대부분 모이면 실제 이미지(영상)로
-    if (parts.length && settled / parts.length > .8 && img.style.opacity !== "1") {
+    if (armed && parts.length && settled / parts.length > .8) {
+      armed = false;
       img.style.opacity = 1;
-      const w = list[cur];
-      if (w.video) { vid.play().then(() => (vid.style.opacity = 1)).catch(() => {}); }
+      vid.play().then(() => { vid.style.opacity = 1; st.textContent = "▶ PLAYING"; }).catch(() => { st.textContent = "PAUSED"; });
+    }
+    // 재생 진행 — 영상이 실제로 돌고 있는지 눈으로 보인다
+    if (vid.duration && !vid.paused) {
+      bar.style.width = (vid.currentTime / vid.duration * 100).toFixed(1) + "%";
+      const s = Math.floor(vid.currentTime);
+      tc.textContent = `00:${String(s).padStart(2, "0")} / 00:${String(Math.round(vid.duration)).padStart(2, "0")}`;
     }
   }
 

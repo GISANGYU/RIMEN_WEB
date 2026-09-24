@@ -65,69 +65,70 @@ export const NODES = [
   },
 ];
 
-/* ── WORK: 테스트 로그 · R&D ──
+/* ── WORK: 영상 작업만 ──
+   still = 입자 응결에 쓰는 한 장면(영상의 1.2초 지점), video = 틀 안에서 재생되는 영상.
    path = 설명문에서 뽑은 핵심어 (읽는 순서대로 상세 화면에서 선으로 이어진다) */
 export const WORKS = [
   {
-    id: "limen", kind: "MAIN", title: "LIMEN", sub: "졸업작품 — 4면 몰입형 인터랙티브",
-    image: M("limen_bg.webp"), video: M("reel.mp4"),
-    extra: [M("studio_grid_a.webp"), M("floor_flowers.webp")],
+    id: "limen", kind: "MAIN", title: "LIMEN", sub: "졸업작품 — 관측 로그 릴",
+    still: M("reel_still.jpg"), video: M("reel.mp4"),
+    extra: [M("floor_flowers.webp"), M("studio_sensor.webp")],
     desc: "벽 세 면은 반응하지 않는 세계를 흘려보내고, 바닥 한 면만 관객의 걸음에 답합니다. 앞사람의 흔적이 다음 사람의 길이 되는 방에서, 관객은 자신의 선택이 누구의 기준이었는지 알아차립니다.",
     path: ["세계를", "바닥", "걸음에", "흔적이", "길이", "방에서", "선택이", "기준이었는지", "알아차립니다"],
   },
   {
-    id: "grid", kind: "TEST", title: "4면 매핑 그리드", sub: "2026.09.17 · 호라이즌 스튜디오",
-    image: M("studio_grid_a.webp"), extra: [M("studio_grid_b.webp"), M("studio_grid_c.webp")],
-    desc: "벽 세 면과 바닥 한 면에 셀 번호 그리드를 띄워 프로젝터가 겹치는 영역과 블렌딩 경계를 확인했습니다. 번호 하나하나가 맞물려야 방이 하나의 화면이 됩니다.",
-    path: ["셀", "그리드를", "프로젝터가", "겹치는", "블렌딩", "경계를", "맞물려야", "하나의", "화면이"],
+    id: "mapping", kind: "TEST", title: "4면 매핑 테스트", sub: "2026.09.23 · 호라이즌 스튜디오",
+    still: M("mapping_test_still.jpg"), video: M("mapping_test.mp4"),
+    extra: [M("studio_grid_a.webp"), M("studio_grid_c.webp"), M("studio_tablet.webp")],
+    desc: "벽 세 면과 바닥 한 면에 영상을 올려 프로젝터가 겹치는 영역과 블렌딩 경계를 확인했습니다. 모서리 점을 하나씩 옮겨 꺾인 면 위에서도 이미지가 곧게 이어지도록 맞췄습니다.",
+    path: ["벽", "영상을", "프로젝터가", "겹치는", "블렌딩", "경계를", "모서리", "꺾인", "곧게"],
   },
   {
-    id: "floor", kind: "TEST", title: "바닥 인터랙션", sub: "2026.09.17 · 호라이즌 스튜디오",
-    image: M("floor_flowers.webp"), extra: [M("studio_sensor.webp")],
-    desc: "관객이 선 자리를 위에서 읽어 바닥에 꽃이 피게 했습니다. 지나간 자리는 사라지지 않고 남아, 다음 관객이 그 위를 걷게 됩니다.",
-    path: ["관객이", "자리를", "위에서", "바닥에", "꽃이", "지나간", "남아", "다음", "걷게"],
-  },
-  {
-    id: "warp", kind: "TEST", title: "워핑 보정", sub: "2026.09.17 · 호라이즌 스튜디오",
-    image: M("studio_tablet.webp"), extra: [M("studio_desk.webp")],
-    desc: "태블릿으로 모서리 점을 하나씩 옮기며 벽과 바닥이 만나는 선을 맞췄습니다. 꺾인 면 위에서도 이미지가 곧게 보이도록.",
-    path: ["태블릿으로", "모서리", "점을", "옮기며", "벽과", "바닥이", "선을", "꺾인", "곧게"],
-  },
-  {
-    id: "sensor", kind: "TEST", title: "센서 뷰", sub: "2026.09.17 · 호라이즌 스튜디오",
-    image: M("studio_sensor.webp"), extra: [M("studio_grid_c.webp")],
-    desc: "스튜디오 안에서 사람의 위치가 어떻게 잡히는지 모니터로 확인했습니다. 어두운 전시장에서는 색이 아니라 깊이로 사람을 찾습니다.",
-    path: ["스튜디오", "사람의", "위치가", "모니터로", "어두운", "색이", "깊이로", "찾습니다"],
+    id: "wide", kind: "R&D", title: "Night Bloom Wide", sub: "Blender · 16:9 궤도 렌더",
+    still: M("night_bloom_wide_still.jpg"), video: M("night_bloom_wide.mp4"),
+    extra: [M("night_bloom.webp")],
+    desc: "봉오리에서 만개까지 피는 동안 카메라가 꽃 둘레를 56도 돌아 들어갑니다. 가로 화면에 맞춰 다시 렌더한 월하미인으로, 벽에 흐를 영상의 톤을 시험했습니다.",
+    path: ["봉오리에서", "만개까지", "카메라가", "꽃", "돌아", "가로", "월하미인으로", "벽에", "톤을"],
   },
   {
     id: "night", kind: "R&D", title: "Night Bloom", sub: "Blender · 지오메트리 노드",
-    image: M("night_bloom.webp"), video: M("night_bloom.mp4"), extra: [M("flower3.webp")],
+    still: M("night_bloom_still.jpg"), video: M("night_bloom.mp4"),
+    extra: [M("flower3.webp")],
     desc: "월하미인의 구조를 따라 안쪽 흰 꽃잎부터 바깥 먹색 띠까지 여덟 겹을 하나의 노드로 만들었습니다. 바닥에 남는 흔적이 피어나는 모양입니다.",
     path: ["월하미인의", "흰", "꽃잎부터", "먹색", "여덟", "하나의", "바닥에", "흔적이", "피어나는"],
   },
   {
     id: "crystal", kind: "R&D", title: "Crystal Bloom", sub: "Blender · 유리 재질",
-    image: M("crystal_bloom.webp"), video: M("crystal_bloom.mp4"),
+    still: M("crystal_bloom_still.jpg"), video: M("crystal_bloom.mp4"),
+    extra: [M("crystal_bloom.webp")],
     desc: "유리 재질과 궤도를 도는 입자를 더한 변주입니다. 반응하지 않는 세 벽의 톤을 시험했습니다.",
     path: ["유리", "궤도를", "입자를", "변주입니다", "반응하지", "세", "벽의", "톤을"],
   },
   {
-    id: "diffusion", kind: "R&D", title: "AI 실루엣 디퓨전", sub: "TouchDesigner · StreamDiffusion",
-    image: M("ai_diffusion_poster.jpg"), video: M("ai_diffusion.mp4"),
-    desc: "카메라가 잡은 사람을 실루엣으로 떼어내고, 그 형태를 실시간 디퓨전으로 빛의 결로 다시 그렸습니다. 사람은 사라지고 움직임만 남습니다.",
-    path: ["카메라가", "사람을", "실루엣으로", "형태를", "실시간", "빛의", "결로", "움직임만"],
-  },
-  {
     id: "bloom", kind: "R&D", title: "Bloom v1", sub: "Blender · 첫 렌더",
-    image: M("flower.webp"), video: M("bloom_v1.mp4"),
+    still: M("bloom_v1_still.jpg"), video: M("bloom_v1.mp4"),
+    extra: [M("flower.webp")],
     desc: "첫 번째 꽃 렌더입니다. 이후 모든 꽃 변주의 기준이 된 모양으로, 봉오리에서 만개까지 한 번에 핍니다.",
     path: ["첫", "꽃", "렌더입니다", "모든", "변주의", "기준이", "봉오리에서", "만개까지"],
   },
   {
-    id: "lespace", kind: "TEST", title: "르스페이스 답사", sub: "2026.08.28 · 레퍼런스",
-    image: M("lespace_a.webp"), extra: [M("lespace_b.webp"), M("lespace_c.webp")],
-    desc: "몰입형 전시장이 천장과 바닥을 어떻게 쓰는지, 관객이 어디서 멈추고 어디로 흘러가는지 관찰했습니다.",
-    path: ["몰입형", "천장과", "바닥을", "관객이", "멈추고", "흘러가는지", "관찰했습니다"],
+    id: "diffusion", kind: "R&D", title: "AI 실루엣 디퓨전", sub: "TouchDesigner · StreamDiffusion",
+    still: M("ai_generated_still.jpg"), video: M("ai_generated.mp4"),
+    extra: [M("ai_diffusion_poster.jpg")],
+    desc: "카메라가 잡은 사람을 실루엣으로 떼어내고, 그 형태를 실시간 디퓨전으로 빛의 결로 다시 그렸습니다. 사람은 사라지고 움직임만 남습니다.",
+    path: ["카메라가", "사람을", "실루엣으로", "형태를", "실시간", "빛의", "결로", "움직임만"],
+  },
+  {
+    id: "wake", kind: "R&D", title: "WAKE", sub: "릴 A안 · 리듬 몽타주",
+    still: M("reel_wake_still.jpg"), video: M("reel_wake.mp4"),
+    desc: "120BPM 비트마다 컷이 넘어가는 전시 트레일러입니다. 맵핑 테스트, 실루엣, 꽃 렌더가 흑백과 컬러로 번갈아 번쩍이고, 거대한 LIMEN 글자 속에서 꽃이 핍니다.",
+    path: ["비트마다", "컷이", "트레일러입니다", "맵핑", "실루엣", "흑백과", "컬러로", "글자", "꽃이"],
+  },
+  {
+    id: "dream", kind: "R&D", title: "BLOOM", sub: "릴 B안 · 자각몽 롱테이크",
+    still: M("reel_bloom_still.jpg"), video: M("reel_bloom.mp4"),
+    desc: "컷 없이 흐르는 한 장면입니다. 밤의 이끼 위로 입자가 떠오르고, 물결처럼 번지며 꽃이 피었다가, 바닥 위의 사람과 겹쳐 실제 공간으로 돌아옵니다.",
+    path: ["컷", "한", "밤의", "입자가", "물결처럼", "꽃이", "바닥", "사람과", "공간으로"],
   },
 ];
 

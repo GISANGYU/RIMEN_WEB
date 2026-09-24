@@ -1,5 +1,6 @@
 /* About 상세 — 매달린 전등 하나. 빛(= 자각)이 닿는 곳의 글만 읽힌다.
-   전등은 진자: θ'' = -(g/L)·sinθ - c·θ'. 드래그로 잡아 흔들고, 놓으면 흔들리다 멈춘다.
+   전등은 마우스가 있는 곳을 비춘다. 목표 각도 = 전등 고정점에서 마우스를 향한 각도.
+   진자 물리(θ'' = -(g/L)·sinθ + k·(목표-θ) - c·θ')를 그대로 둬서, 빠르게 움직이면 살짝 흔들리며 따라온다.
    빛 = 전구에서 줄 방향으로 퍼지는 원뿔. 본문 레이어에 원뿔 모양 clip-path 를 매 프레임 준다. */
 import { NODES } from "./data.js";
 
@@ -17,7 +18,7 @@ export function mount(root, params, app) {
   root.innerHTML = `<div class="dim">${content()}</div><div class="lit">${content()}</div>
     <svg class="lamp-svg"><line class="cord" stroke="#9a9a9a" stroke-width="1"/><g class="head"><polygon points="-30,26 30,26 12,0 -12,0" fill="#cfcfcf"/><rect x="-3" y="-8" width="6" height="8" fill="#888"/><circle class="bulb" cx="0" cy="30" r="7" fill="#fff"/></g><line class="pull" stroke="#777" stroke-width="1"/><circle class="knob" r="3.5" fill="#666"/></svg>
     <a class="go-back mono" href="#/about" data-hover>&lt; GO BACK</a>
-    <div class="hint mono">전등을 잡아 흔들어 보세요</div>`;
+    <div class="hint mono">마우스가 가는 곳을 전등이 비춥니다</div>`;
   const lit = root.querySelector(".lit"), dim = root.querySelector(".dim");
   const svg = root.querySelector(".lamp-svg"), cord = svg.querySelector(".cord"), head = svg.querySelector(".head");
   const pull = svg.querySelector(".pull"), knob = svg.querySelector(".knob"), back = root.querySelector(".go-back");
@@ -30,24 +31,25 @@ export function mount(root, params, app) {
     app.replace(`#/about/${NODES[idx].id}`); flicker = .35; om += .9; app.sound.blip(700, .04, .03);
   }, true);
 
-  // 진자 상태
+  // 진자 상태 — 마우스를 따라간다
   const L = 140;                     // 줄 길이 px
-  let th = .55, om = 0, grabbed = false, flicker = .6;
+  let th = .55, om = 0, flicker = .6, aim = 0, hasMouse = false;
   const pivot = () => ({ x: root.clientWidth / 2, y: -40 });
-  const down = e => { if (e.target.closest("a")) return; grabbed = true; };
   const move = e => {
-    if (!grabbed) return;
     const p = pivot(), b = root.getBoundingClientRect();
-    const target = Math.atan2(-(e.clientX - b.left - p.x), Math.max(40, e.clientY - b.top - p.y));
-    om += (Math.max(-1.1, Math.min(1.1, target)) - th) * .25;
+    const mx = e.clientX - b.left, my = e.clientY - b.top;
+    // 전구에서 마우스까지의 방향 = 빛의 방향
+    aim = Math.max(-1.15, Math.min(1.15, Math.atan2(-(mx - p.x), Math.max(60, my - p.y))));
+    hasMouse = true;
   };
-  const up = () => { grabbed = false; };
-  root.addEventListener("pointerdown", down); addEventListener("pointermove", move); addEventListener("pointerup", up);
+  addEventListener("pointermove", move);
 
   function tick(dt) {
     const steps = 4, h = Math.min(dt, .033) / steps;
     for (let i = 0; i < steps; i++) {
-      const acc = -(9.8 * 60 / L) * Math.sin(th) - (grabbed ? 6 : .55) * om;
+      // 마우스가 없으면 천천히 좌우로 훑는다
+      const target = hasMouse ? aim : Math.sin(performance.now() / 1600) * .45;
+      const acc = -(9.8 * 60 / L) * Math.sin(th) * .15 + (target - th) * 38 - 5.2 * om;
       om += acc * h; th += om * h;
     }
     th = Math.max(-1.2, Math.min(1.2, th));
@@ -77,6 +79,6 @@ export function mount(root, params, app) {
 
   return {
     theme: "dark", tick,
-    destroy() { removeEventListener("pointermove", move); removeEventListener("pointerup", up); },
+    destroy() { removeEventListener("pointermove", move); },
   };
 }

@@ -117,7 +117,14 @@ body.touch #cur { display: none; }
 .work-frame .edge { position: absolute; inset: 0; border: 1px solid #ffffff55; }
 .work-frame img, .work-frame video { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); object-fit: cover; opacity: 0; transition: opacity .6s var(--ease); }
 .work-frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.work-meta { position: absolute; right: calc(50% + 11vw + 22px); top: 50%; transform: translateY(-50%); text-align: right; z-index: 4; }
+.work-meta { position: absolute; right: calc(50% + 11vw + 22px); top: calc(50% - 8.25vw); text-align: right; z-index: 4; }
+/* 틀 오른쪽: 설명 + 재생 진행 */
+.work-desc { position: absolute; left: calc(50% + 11vw + 22px); top: calc(50% - 8.25vw); width: min(22vw, 360px); z-index: 4; opacity: 0; transform: translateY(10px); }
+.work-desc.in { opacity: 1; transform: none; transition: opacity .8s var(--ease) .15s, transform .9s var(--ease) .15s; }
+.work-desc p { font-family: var(--kr); font-size: 13px; line-height: 1.85; color: #cfcfcf; }
+.work-desc .play { display: flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 10px; letter-spacing: .14em; color: #9a9a9a; }
+.work-desc .play i { flex: 1; height: 1px; background: #ffffff33; position: relative; }
+.work-desc .play b { position: absolute; left: 0; top: -1px; height: 3px; width: 0; background: #fff; }
 .work-meta .no { font-size: 10px; letter-spacing: .2em; opacity: .6; }
 .work-meta .t { font-size: 18px; font-weight: 600; letter-spacing: .06em; margin: 6px 0 4px; text-transform: uppercase; font-family: var(--ui); }
 .work-meta .t.kr { font-family: var(--kr); letter-spacing: .02em; }
@@ -155,6 +162,7 @@ body.touch #cur { display: none; }
   .side { font-size: 10px; } .side.l { left: 12px; } .side.r { right: 12px; }
   .work-meta { right: auto; left: 50%; top: auto; bottom: 64px; transform: translateX(-50%); text-align: center; width: 90vw; background: linear-gradient(transparent, #0a0a0a 30%); padding-top: 24px; }
   .work-list, .work-frame { width: 64vw; min-width: 0; }
+  .work-desc { display: none; }
   .proj-panel { width: 100%; top: 52%; padding: 20px; background: #0a0a0acc; }
   .proj-field { right: 0; bottom: 48%; }
   .sec-body { font-size: 13px; line-height: 1.8; }

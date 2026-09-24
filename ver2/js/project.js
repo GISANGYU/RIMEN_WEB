@@ -12,8 +12,8 @@ export function mount(root, params, app) {
   let desc = esc(w.desc);
   w.path.forEach((k, n) => { desc = desc.replace(k, `<mark data-k="${n}">${k}</mark>`); });
 
-  const media = [w.video ? `<video src="${w.video}" poster="${w.image}" muted loop playsinline autoplay></video>` : `<img src="${w.image}" alt="${esc(w.title)}">`,
-    ...(w.video ? [`<img src="${w.image}" alt="">`] : []), ...(w.extra || []).map(s => `<img src="${s}" alt="" loading="lazy">`)];
+  const media = [`<video src="${w.video}" poster="${w.still}" muted loop playsinline autoplay></video>`,
+    ...(w.extra || []).map(s => `<img src="${s}" alt="" loading="lazy">`)];
 
   root.className = "page dark";
   root.innerHTML = `<canvas class="fill proj-field"></canvas>

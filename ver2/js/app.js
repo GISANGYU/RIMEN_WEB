@@ -66,13 +66,15 @@ function tickGrain(dt) {
 /* ── CRT 붕괴 전환 ── */
 const line = $("#crt i");
 const wait = ms => new Promise(r => setTimeout(r, ms));
+/* 애니메이션이 끝나기를 기다리되, 탭이 가려져 멈추면 시간 초과로 넘어간다 (전환이 영영 안 끝나는 것 방지) */
+const done = (anim, ms) => Promise.race([anim.finished.catch(() => {}), wait(ms + 150)]);
 async function crtOut() {
   sound.sweep(false);
   if (reduced) { view.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: "forwards" }); await wait(200); return; }
-  await view.animate([
+  await done(view.animate([
     { transform: "scale(1, 1)", filter: "brightness(1)" },
     { transform: "scale(1, .004)", filter: "brightness(4)" },
-  ], { duration: 340, easing: "cubic-bezier(.7,0,.84,0)", fill: "forwards" }).finished;
+  ], { duration: 340, easing: "cubic-bezier(.7,0,.84,0)", fill: "forwards" }), 340);
   view.style.opacity = 0;
   line.animate([{ transform: "scaleX(1)", opacity: 1 }, { transform: "scaleX(0)", opacity: 1 }, { transform: "scaleX(0)", opacity: 0 }],
     { duration: 260, easing: "cubic-bezier(.6,0,.2,1)", fill: "forwards" });
@@ -82,14 +84,16 @@ async function crtIn() {
   sound.sweep(true);
   view.getAnimations().forEach(a => a.cancel());
   if (reduced) { view.style.opacity = 1; return; }
-  await line.animate([{ transform: "scaleX(0)", opacity: 1 }, { transform: "scaleX(1)", opacity: 1 }], { duration: 170, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }).finished;
+  await done(line.animate([{ transform: "scaleX(0)", opacity: 1 }, { transform: "scaleX(1)", opacity: 1 }], { duration: 170, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }), 170);
   view.style.opacity = 1;
   line.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, fill: "forwards" });
-  await view.animate([
+  const inAnim = view.animate([
     { transform: "scale(1, .004)", filter: "brightness(4)" },
     { transform: "scale(1, 1.02)", filter: "brightness(1.3)", offset: .75 },
     { transform: "scale(1, 1)", filter: "brightness(1)" },
-  ], { duration: 460, easing: "cubic-bezier(.16,1,.3,1)" }).finished;
+  ], { duration: 460, easing: "cubic-bezier(.16,1,.3,1)" });
+  await done(inAnim, 460);
+  inAnim.cancel();
 }
 
 /* ── 라우터 ── */
@@ -162,6 +166,9 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* 검증용 — 탭이 가려져 rAF 가 멈춘 브라우저에서 프레임을 손으로 돌린다 */
+window.__limen = { step(n = 1, dt = 1 / 60) { for (let i = 0; i < n; i++) { tickCursor(); current?.tick?.(dt, performance.now() / 1000 + i * dt); } } };
 
 /* ── 시작: 세션 첫 방문이면 인트로 ── */
 (async () => {

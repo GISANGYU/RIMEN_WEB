@@ -78,19 +78,36 @@ export function mount(root, params, app) {
     labelsEl.appendChild(el); s.el = el;
   });
 
-  // 입력: 드래그 회전(관성) · 휠 전후
+  // 입력: 드래그 회전(관성) · 휠 전후 · 제자리 클릭 = 가장 가까운 별로
+  // (예전엔 pointerdown 에서 setPointerCapture 를 걸어 클릭이 라벨이 아닌 배경으로 가 버렸다)
   const rot = { x: .15, y: 0, vx: 0, vy: .0009 };
-  let dist = 72, distT = 72, drag = null;
-  const down = e => { drag = { x: e.clientX, y: e.clientY }; root.setPointerCapture?.(e.pointerId); };
+  let dist = 72, distT = 72, drag = null, moved = 0, hoverStar = null;
+  const down = e => {
+    if (e.target.closest(".star-label, a")) return;
+    drag = { x: e.clientX, y: e.clientY }; moved = 0;
+  };
   const move = e => {
     if (!drag) return;
+    moved += Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y);
     rot.vy = (e.clientX - drag.x) * .0022; rot.vx = (e.clientY - drag.y) * .0016;
     drag = { x: e.clientX, y: e.clientY };
   };
-  const up = () => { drag = null; };
+  const up = e => {
+    if (drag && moved < 6) {                     // 드래그가 아니라 클릭이었다
+      const b = root.getBoundingClientRect(), mx = e.clientX - b.left, my = e.clientY - b.top;
+      let best = null, bd = 90;
+      for (const s of stars) { if (s.sx === undefined) continue; const d = Math.hypot(s.sx - mx, s.sy - my); if (d < bd) { bd = d; best = s; } }
+      if (best) flyTo(best);
+    }
+    drag = null;
+  };
   const wheel = e => { distT = Math.max(34, Math.min(110, distT + e.deltaY * .04)); };
   root.addEventListener("pointerdown", down); addEventListener("pointermove", move); addEventListener("pointerup", up);
   root.addEventListener("wheel", wheel, { passive: true });
+  stars.forEach(s => {
+    s.el.addEventListener("pointerenter", () => { hoverStar = s; app.sound.blip(900, .03, .02); });
+    s.el.addEventListener("pointerleave", () => { if (hoverStar === s) hoverStar = null; });
+  });
 
   // 별 속으로 날아가기
   let fly = null;
@@ -113,7 +130,7 @@ export function mount(root, params, app) {
 
   function tick(dt, t) {
     dustMat.uniforms.uTime.value = t;
-    if (!drag) { rot.vy += (.0009 - rot.vy) * .02; rot.vx *= .94; }
+    if (!drag) { rot.vy += ((hoverStar ? 0 : .0009) - rot.vy) * (hoverStar ? .2 : .02); rot.vx *= .94; }
     rot.y += rot.vy; rot.x = Math.max(-.7, Math.min(.7, rot.x + rot.vx));
     world.rotation.set(rot.x, rot.y, 0);
     world.updateMatrixWorld();
@@ -138,9 +155,11 @@ export function mount(root, params, app) {
       v.project(camera);
       const vis = v.z < 1 && Math.abs(v.x) < 1.1 && Math.abs(v.y) < 1.1;
       s.el.style.display = vis ? "" : "none";
-      if (!vis) continue;
+      if (!vis) { s.sx = undefined; continue; }
+      s.sx = (v.x * .5 + .5) * w; s.sy = (-v.y * .5 + .5) * h;
       const sc = Math.max(.7, Math.min(2.1, 90 / depth));
-      s.el.style.transform = `translate3d(${(v.x * .5 + .5) * w}px, ${(-v.y * .5 + .5) * h}px, 0) translateY(-50%) scale(${sc})`;
+      s.el.style.transform = `translate3d(${s.sx}px, ${s.sy}px, 0) translateY(-50%) scale(${sc})`;
+      s.el.style.color = hoverStar === s ? "#fff" : "";
       s.el.style.fontSize = "12px";
       s.el.style.opacity = Math.max(.25, Math.min(1, 120 / depth - .4));
     }
