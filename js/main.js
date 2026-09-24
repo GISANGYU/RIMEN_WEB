@@ -1,7 +1,7 @@
 import { scroll, math, ease } from "./scroll.js";
 import { gl, DomPlane } from "./gl.js";
 import { initReel } from "./reel.js";
-import { WORKS, SURFACES, HERO_IMAGE } from "./content.js";
+import { WORKS, SURFACES, HERO_IMAGE, REEL } from "./content.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -116,6 +116,7 @@ function updateTunnel() {
 /* ── 오버레이 ───────────────────────────────── */
 function openVideo() {
   const ov = $("#video-overlay"), v = $("#video-overlay-video");
+  if (!v.src.endsWith(REEL.video)) v.src = REEL.video;
   ov.hidden = false; v.currentTime = 0; v.play().catch(() => {});
 }
 function closeVideo() { const v = $("#video-overlay-video"); v.pause(); $("#video-overlay").hidden = true; }

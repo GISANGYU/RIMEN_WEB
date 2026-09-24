@@ -9,6 +9,15 @@ export const REEL = {
   aspect: 16 / 9,
 };
 
+/* 릴 후보 비교 — 주소 뒤에 ?reel=A (B, C) 를 붙이면 reel_lab/out 의 후보로 바꿔 끼운다 */
+const REEL_CANDIDATES = { A: "reel_A_wake", B: "reel_B_bloom", C: "reel_C_signal" };
+const pick = new URLSearchParams(location.search).get("reel");
+if (pick && REEL_CANDIDATES[pick.toUpperCase()]) {
+  const name = REEL_CANDIDATES[pick.toUpperCase()];
+  REEL.video = `reel_lab/out/${name}.mp4`;
+  REEL.poster = `reel_lab/out/${name}_poster.jpg`;
+}
+
 export const HERO_IMAGE = "media/limen_bg.webp";
 
 /* 테스트 로그 · R&D — 원본 Featured Work 자리.
@@ -81,7 +90,7 @@ export const SURFACES = [
   {
     no: "01", title: "세 벽", sub: "내가 보고 영향을 받는 세계",
     body: "관객이 들어오기 전부터 흐르고 있고, 관객에게 반응하지 않는다. 환경·정보·타인의 선택·사회의 기준.",
-    image: "media/reel_poster.jpg",
+    image: "media/studio_grid_c.webp",
   },
   {
     no: "02", title: "바닥", sub: "그 영향을 받은 내가 실제로 선택하는 자리",
