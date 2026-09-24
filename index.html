@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIMEN — SNOOZE</title>
+<meta name="description" content="LIMEN — 타인의 기준이 내 선택에 들어와 있음을 알아차리는 순간. 팀 SNOOZE 의 4면 몰입형 인터랙티브 전시.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="canvas" aria-hidden="true"></canvas>
+
+<!-- 프리로더 — 원본의 000→100 카운터 -->
+<div id="preloader">
+  <div id="preloader-bar"><span></span></div>
+  <div id="preloader-count">000</div>
+</div>
+
+<header id="header">
+  <a id="logo" href="#home-hero" data-scroll-to>LIMEN</a>
+  <nav id="header-right">
+    <a class="pill pill--blue" href="#end-section" data-scroll-to><span class="pill-dot"></span>전시 보러 가기</a>
+    <button class="pill" id="menu-btn" aria-expanded="false" aria-controls="menu">MENU <span class="menu-dots"><i></i><i></i></span></button>
+  </nav>
+</header>
+
+<div id="menu" hidden>
+  <a href="#home-hero" data-scroll-to>HOME</a>
+  <a href="#home-reel" data-scroll-to>REEL</a>
+  <a href="#home-featured" data-scroll-to>TEST LOG</a>
+  <a href="#home-goal" data-scroll-to>CONCEPT</a>
+  <a href="#end-section" data-scroll-to>VISIT</a>
+</div>
+
+<main id="smooth">
+
+  <!-- ① HERO -->
+  <section id="home-hero" class="section">
+    <div id="home-hero-plane" data-gl="hero"></div>
+    <h1 id="home-hero-title">
+      <span class="line">타인의 기준이 내 선택에</span>
+      <span class="line">들어와 있음을 알아차리는 순간.</span>
+    </h1>
+    <div id="home-hero-scroll">
+      <span class="plus">+</span><span>SCROLL TO EXPLORE</span><span class="plus">+</span>
+    </div>
+  </section>
+
+  <!-- ② REEL — 핵심 워핑 -->
+  <section id="home-reel" class="section grid">
+    <h2 id="home-reel-title">
+      <div id="home-reel-title-inner">
+        <div id="home-reel-title-line-1" class="split">Wake Inside,</div>
+        <div id="home-reel-title-line-2" class="split">the Dream</div>
+      </div>
+    </h2>
+
+    <div id="home-reel-thumb-wrapper">
+      <div id="home-reel-thumb"><img src="media/reel_poster.jpg" alt="" class="gl-fallback"></div>
+    </div>
+
+    <div id="home-reel-content">
+      <p id="home-reel-desc" class="split-lines">LIMEN 은 벽 세 면과 바닥 한 면으로 이루어진 방입니다. 벽의 세계는 당신에게 반응하지 않고 흘러가고, 오직 바닥만이 당신의 움직임에 답합니다. 그 차이를 알아차리는 순간 — 문턱(limen)을 넘습니다.</p>
+      <a id="home-reel-cta" class="cta" href="#home-goal" data-scroll-to>
+        <span class="cta-dot"></span><span class="cta-text">기획 의도</span>
+        <span class="cta-arrow"><svg viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.343 8h11.314m0 0L8.673 3.016M13.657 8l-4.984 4.984"/></svg></span>
+      </a>
+    </div>
+
+    <div id="home-reel-container">
+      <div id="home-reel-container-inner">
+        <div id="home-reel-video-container">
+          <div id="home-reel-video-container-decoration">
+            <div class="reel-crosses"><span>+</span><span>+</span><span>+</span><span>+</span></div>
+            <div class="reel-crosses"><span>+</span><span>+</span><span>+</span><span>+</span></div>
+          </div>
+          <div id="home-reel-video-placeholder"><img src="media/reel_poster.jpg" alt="" class="gl-fallback"></div>
+          <button id="home-reel-video-watch-btn" aria-label="시연 영상 재생">
+            <span class="watch-bg"></span>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+          </button>
+          <div id="home-reel-video-title"><span>PLAY</span><span>REEL</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ FEATURED → TEST LOG -->
+  <section id="home-featured" class="section grid">
+    <div id="home-featured-title-top">
+      <div id="home-featured-title-wrapper">
+        <h2 id="home-featured-title" class="split-chars">Test Log</h2>
+        <p id="home-featured-disclaimer">LIMEN 을 만들며 직접 돌려 본 장면과 R&amp;D 기록.<br>호라이즌 스튜디오 · 학교 · Blender · TouchDesigner.</p>
+      </div>
+    </div>
+    <div id="home-featured-items"></div>
+    <a id="home-featured-cta" class="cta cta--white" href="https://dmd-snooze.vercel.app/" target="_blank" rel="noopener">
+      <span class="cta-dot"></span><span class="cta-text">전체 기록 보기</span>
+      <span class="cta-arrow"><svg viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.343 8h11.314m0 0L8.673 3.016M13.657 8l-4.984 4.984"/></svg></span>
+    </a>
+  </section>
+
+  <!-- ④ GOAL → 4면 구조 + 터널 문장 -->
+  <section id="home-goal" class="section">
+    <div id="home-goal-intro" class="grid">
+      <h2 id="home-goal-title" class="split-lines">세계는 반응하지 않고,<br>바닥만이 나에게 답한다</h2>
+      <div id="home-goal-text">
+        <p class="split-lines">모든 면이 반응하면 "내가 세계를 통제한다"로 읽힙니다. LIMEN 의 자각은 통제가 아니라 관계입니다.</p>
+        <p class="split-lines">공간은 나누지 않습니다. 같은 방 안에서 바뀌는 것은 오직 당신의 인식 — 자각몽과 같은 구조입니다.</p>
+      </div>
+    </div>
+    <div id="home-goal-surfaces" class="grid"></div>
+
+    <div id="home-goal-tunnel">
+      <div id="home-goal-tunnel-sticky">
+        <div class="tunnel-line" data-i="0">STEP INTO</div>
+        <div class="tunnel-line" data-i="1">THE THRESHOLD</div>
+        <div class="tunnel-line" data-i="2">AND NOTICE</div>
+        <div class="tunnel-line" data-i="3">WHO CHOSE</div>
+        <div class="tunnel-line tunnel-line--accent" data-i="4">FOR YOU</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ END -->
+  <section id="end-section" class="section">
+    <p id="end-section-eyebrow">당신의 선택은, 누구의 기준인가요?</p>
+    <a id="end-section-title" class="rollup-big" href="https://dmd-snooze.vercel.app/" target="_blank" rel="noopener">Let's wake together!</a>
+    <div id="end-section-info" class="grid">
+      <div><span class="label">EXHIBITION</span>계원예술대학교 졸업전시<br>2026.11.20 — 11.22</div>
+      <div><span class="label">VENUE</span>COSS 호라이즌 스튜디오<br>벽 3면 + 바닥 1면</div>
+      <div><span class="label">TEAM</span>SNOOZE<br>디지털미디어디자인</div>
+    </div>
+  </section>
+
+  <footer id="footer-section" class="section grid">
+    <div class="footer-col">LIMEN<br>작품</div>
+    <div class="footer-col">SNOOZE<br>팀</div>
+    <div class="footer-col"><a href="https://dmd-snooze.vercel.app/" target="_blank" rel="noopener">팀 작업 공간 ↗</a></div>
+    <div class="footer-col footer-col--right">©2026 SNOOZE<br>Capstone Design</div>
+  </footer>
+</main>
+
+<!-- 릴 커서 · 영상 오버레이 · 카드 라이트박스 -->
+<div id="reel-cursor" aria-hidden="true"><span>PLAY</span></div>
+<div id="video-overlay" hidden>
+  <video id="video-overlay-video" src="media/reel.mp4" playsinline controls loop></video>
+  <button id="video-overlay-close" class="pill">CLOSE ✕</button>
+</div>
+<div id="lightbox" hidden>
+  <div id="lightbox-media"></div>
+  <div id="lightbox-text"></div>
+  <button id="lightbox-close" class="pill">CLOSE ✕</button>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
